@@ -11,11 +11,12 @@ type CommentRepositoryInterface interface {
 	CreateComment(comment models.Comment) (models.Comment, error)
 	FindPhotoByID(ID uint) (models.Photo, error)
 	FindCommentByID(ID uint) (models.Comment, error)
-	GetCommentByID(ID uint) (models.Comment, error)
+	GetCommentByID(ID uint) (models.Comment, error) //for testing only
 	UpdateComment(comment models.Comment) (models.Comment, error)
 	FindAllComments() ([]models.Comment, error)
 	DeleteCommentByID(comment *models.Comment) error
 	RestoreCommentByID(comment models.Comment) (models.Comment, error)
+	FindDeletedCommentByID(ID uint) (models.Comment, error)
 }
 
 type commentRepository struct {
@@ -100,13 +101,6 @@ func (r *commentRepository) FindAllComments() ([]models.Comment, error) {
 }
 
 func (r *commentRepository) DeleteCommentByID(comment *models.Comment) error {
-	// tx := r.db.Begin()
-	// comment := models.Comment{}
-	
-	// if err := tx.Debug().Model(&comment).Unscoped().Delete(&comment).Error; err != nil {
-	// 	return err
-	// }
-	// return nil
 	return r.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Delete(comment).Error; err != nil {
 			return err
@@ -119,11 +113,28 @@ func (r *commentRepository) DeleteCommentByID(comment *models.Comment) error {
 
 func (r *commentRepository) RestoreCommentByID(comment models.Comment) (models.Comment, error) {
 	tx := r.db.Begin()
+	dataComment := models.Comment{}
+	if err := tx.Debug().Unscoped().Where("id = ?", comment.ID).Preload("User").Preload("Photo").First(&dataComment).Error; err != nil {
+		return dataComment, err
+	}
 
-	if err := tx.Debug().Model(comment).UpdateColumn("deleted_at", nil).Error; err != nil {
-		tx.Rollback()
+	if dataComment.DeletedAt != nil {
+		if err := r.db.Unscoped().Model(&comment).Update("deleted_at", nil).Error; err != nil {
+			return dataComment, err
+		}
+	}
+	return dataComment, nil
+}
+
+func (r *commentRepository) FindDeletedCommentByID(ID uint) (models.Comment, error) {
+	tx := r.db.Begin()
+	comment := models.Comment{}
+	if err := tx.Debug().Unscoped().Preload("User").Preload("Photo").Where("id = ?", ID).First(&comment).Error; err != nil {
 		return comment, err
 	}
-	tx.Commit()
+
+	if comment.DeletedAt == nil {
+        return comment, gorm.ErrRecordNotFound
+    }
 	return comment, nil
 }

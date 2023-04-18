@@ -15,6 +15,7 @@ type CommentServiceInterface interface {
 	FindAllComments() ([]models.Comment, error)
 	DeleteCommentByID(ID uint) error
 	RestoreCommentByID(ID uint) (models.Comment, error)
+	FindDeletedCommentByID(ID uint) (models.Comment, error)
 }
 
 type commentService struct {
@@ -107,8 +108,17 @@ func (s *commentService) DeleteCommentByID(ID uint) error {
 	return nil
 }
 
+func (s *commentService) FindDeletedCommentByID(ID uint) (models.Comment, error) {
+	deletedComment, err := s.repo.FindDeletedCommentByID(ID)
+	if err != nil {
+		return deletedComment, err
+	}
+
+	return deletedComment, nil
+}
+
 func (s *commentService) RestoreCommentByID(ID uint) (models.Comment, error) {
-	comment, err := s.repo.FindCommentByID(ID)
+	comment, err := s.repo.FindDeletedCommentByID(ID)
 	if err != nil {
 		return comment, err
 	}

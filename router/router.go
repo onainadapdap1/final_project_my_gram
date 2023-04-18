@@ -50,6 +50,7 @@ func Router() *gin.Engine {
 		commentRouter.POST("/comment", userAuthorization(userService), commentHandler.CreateComment)
 		commentRouter.PUT("/comment/:id", userAuthorization(userService), commentHandler.UpdateComment)
 		commentRouter.DELETE("/comment/:id", userAuthorization(userService), commentHandler.DeleteCommentByID)
+		commentRouter.PUT("/restorecomment/:id", userAuthorization(userService), commentHandler.RestoreCommentByID)
 	}
 	return router
 }

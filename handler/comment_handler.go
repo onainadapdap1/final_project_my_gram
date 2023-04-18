@@ -189,14 +189,14 @@ func (h *commentHandler) RestoreCommentByID(c *gin.Context) {
 	currentUser := c.MustGet("currentUser").(models.User)
 	userId := currentUser.ID
 
-	comment, err := h.service.FindCommentByID(uint(inputID.ID))
+	deletedComment, err := h.service.FindDeletedCommentByID(uint(inputID.ID))
 	if err != nil {
 		response := utils.APIResponse("Failed to find comment by id", http.StatusInternalServerError, "error", nil)
 		c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 
-	if userId != comment.UserID {
+	if userId != deletedComment.UserID {
 		response := utils.APIResponse("Unauthorized", http.StatusForbidden, "error", nil)
 		c.JSON(http.StatusForbidden, response)
 		return
