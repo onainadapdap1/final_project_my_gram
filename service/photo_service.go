@@ -12,7 +12,6 @@ type PhotoServiceInterface interface {
 	FindByPhotoID(ID uint) (models.Photo, error)
 	FindAllPhoto() ([]models.Photo, error)
 	DeletePhotoByID(photo models.Photo) error
-	
 }
 
 type photoService struct {

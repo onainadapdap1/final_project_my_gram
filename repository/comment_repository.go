@@ -64,12 +64,15 @@ func (r *commentRepository) FindCommentByID(ID uint) (models.Comment, error) {
 	return comment, nil
 }
 
-func(r *commentRepository) GetCommentByID(ID uint) (models.Comment, error) {
+func (r *commentRepository) GetCommentByID(ID uint) (models.Comment, error) {
 	tx := r.db.Begin()
 	comment := models.Comment{}
 
-	if err := tx.Debug().Where("id = ?", ID).First(&comment).Error; err != nil {
+	if err := tx.Debug().Unscoped().Preload("User").Preload("Photo").Where("id = ?", ID).First(&comment).Error; err != nil {
 		return comment, fmt.Errorf("[GetByID.Get] Error when query get data with : %w", err)
+	}
+	if comment.DeletedAt == nil {
+		return comment, gorm.ErrRecordNotFound
 	}
 	tx.Commit()
 	return comment, nil
@@ -108,7 +111,7 @@ func (r *commentRepository) DeleteCommentByID(comment *models.Comment) error {
 
 		return nil
 	})
-	
+
 }
 
 func (r *commentRepository) RestoreCommentByID(comment models.Comment) (models.Comment, error) {

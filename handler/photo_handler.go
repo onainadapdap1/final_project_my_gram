@@ -21,7 +21,7 @@ type PhotoHandlerInterface interface {
 	UpdatePhoto(c *gin.Context)
 	FindAllPhoto(c *gin.Context)
 	FindByPhotoID(c *gin.Context)
-	DeletePhotoByID(c *gin.Context) 
+	DeletePhotoByID(c *gin.Context)
 }
 
 type photoHandler struct {
@@ -38,7 +38,7 @@ func (h *photoHandler) CreatePhoto(c *gin.Context) {
 	file, err := c.FormFile("photo_url")
 	if err != nil {
 		// response := utils.APIResponse("Failed to bind image file", http.StatusBadRequest, "error", nil)
-		response := utils.APIResponse(fmt.Sprintf("%v",err), http.StatusBadRequest, "error", nil)
+		response := utils.APIResponse(fmt.Sprintf("%v", err), http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
@@ -125,7 +125,7 @@ func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 
 	currentUser := c.MustGet("currentUser").(models.User)
 	userId := currentUser.ID
-
+	
 	if userId != photo.UserID {
 		response := utils.APIResponse("Unauthorized", http.StatusForbidden, "error", nil)
 		c.JSON(http.StatusForbidden, response)
