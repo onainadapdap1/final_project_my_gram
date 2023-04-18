@@ -17,6 +17,7 @@ type User struct {
 	Age      int    `gorm:"not null" json:"age" form:"age" valid:"required~Your Age is required"`
 	Photo   []Photo
 	Comment []Comment
+	SocialMedia []SocialMedia
 }
 
 type RegisterUserInput struct {

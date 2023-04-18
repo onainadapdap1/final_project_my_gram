@@ -14,7 +14,8 @@ func drop(db *gorm.DB) {
 	if err := db.DropTableIfExists(
 		&models.User{}, 
 		&models.Photo{},
-		&models.Comment{}).Error; err != nil {
+		&models.Comment{},
+		&models.SocialMedia{},).Error; err != nil {
 		log.Fatalf("Error dropping tables: %v", err)
 	}
 }
@@ -23,7 +24,8 @@ func migrate(db *gorm.DB) {
 	if err := db.Debug().AutoMigrate(
 		&models.User{}, 
 		&models.Photo{},
-		&models.Comment{}).Error; err != nil {
+		&models.Comment{},
+		&models.SocialMedia{},).Error; err != nil {
 		log.Fatalf("Error migrating tables: %v", err)
 	}
 }

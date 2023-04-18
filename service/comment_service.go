@@ -26,9 +26,9 @@ func NewCommentService(repo repository.CommentRepositoryInterface) CommentServic
 }
 
 func (s *commentService) CreateComment(input dtos.CreateCommentInput) (models.Comment, error) {
-	comment := models.Comment {
+	comment := models.Comment{
 		Message: input.Message,
-		UserID: input.User.ID,
+		UserID:  input.User.ID,
 		PhotoID: input.PhotoID,
 	}
 
@@ -41,7 +41,7 @@ func (s *commentService) CreateComment(input dtos.CreateCommentInput) (models.Co
 }
 
 func (s *commentService) FindPhotoByID(ID uint) (models.Photo, error) {
-	photo, err := s.repo.FindPhotoByID(ID); 
+	photo, err := s.repo.FindPhotoByID(ID)
 	if err != nil {
 		return photo, err
 	}
@@ -68,7 +68,7 @@ func (s *commentService) GetCommentByID(ID uint) (models.Comment, error) {
 }
 
 func (s *commentService) UpdateComment(inputID dtos.GetCommentDetailInput, inputData dtos.UpdateCommentInput) (models.Comment, error) {
-	comment, err := s.repo.FindCommentByID(inputID.ID)
+	comment, err := s.repo.GetCommentByID(inputID.ID)
 	if err != nil {
 		return comment, err
 	}
@@ -108,7 +108,7 @@ func (s *commentService) DeleteCommentByID(ID uint) error {
 }
 
 func (s *commentService) RestoreCommentByID(ID uint) (models.Comment, error) {
-	comment, err := s.repo.FindCommentByID(ID)
+	comment, err := s.repo.GetCommentByID(ID)
 	if err != nil {
 		return comment, err
 	}

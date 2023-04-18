@@ -29,6 +29,10 @@ func Router() *gin.Engine {
 	commentService := service.NewCommentService(commentRepo)
 	commentHandler := handler.NewCommentHandler(commentService)
 
+	socialMediaRepo := repository.NewSocialmediaRepository(db)
+	socialMediaService := service.NewSocialmediaService(socialMediaRepo)
+	socialMediaHandler := handler.NewSocialmediaHandler(socialMediaService)
+
 	api := router.Group("api/v1")
 	api.POST("/register", userHandler.RegisterUser)
 	api.POST("/login", userHandler.LoginUser)
@@ -50,7 +54,19 @@ func Router() *gin.Engine {
 		commentRouter.POST("/comment", userAuthorization(userService), commentHandler.CreateComment)
 		commentRouter.PUT("/comment/:id", userAuthorization(userService), commentHandler.UpdateComment)
 		commentRouter.DELETE("/comment/:id", userAuthorization(userService), commentHandler.DeleteCommentByID)
+		commentRouter.PUT("/restorecomment/:id", userAuthorization(userService), commentHandler.RestoreCommentByID)
 	}
+	socialmediaRouter := api.Group("/socialmedias")
+	{
+		socialmediaRouter.GET("", socialMediaHandler.FindAllSocialMedia)
+		socialmediaRouter.GET("/socialmedia/:id", socialMediaHandler.FindBySocialMediaID)
+		socialmediaRouter.Use(middlewares.Authentication())
+		socialmediaRouter.POST("/socialmedia", userAuthorization(userService), socialMediaHandler.CreateSocialMedia)
+		socialmediaRouter.PUT("/socialmedia/:id", userAuthorization(userService), socialMediaHandler.UpdateSocialMedia)
+		socialmediaRouter.DELETE("/sosmed/:id", userAuthorization(userService), socialMediaHandler.DeleteSocialMedia)
+		socialmediaRouter.PUT("/restoresosmed/:id", userAuthorization(userService), socialMediaHandler.RestoreSocialMedia)
+	}
+
 	return router
 }
 
@@ -61,7 +77,7 @@ func userAuthorization(userSerivce service.UserServiceInterface) gin.HandlerFunc
 
 		user, err := userSerivce.GetUserByID(userId)
 		if err != nil {
-			c.AbortWithStatusJSON(http.StatusNotFound, gin.H {
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 				"error":   "Data not found",
 				"message": "data doesn't exist",
 			})
