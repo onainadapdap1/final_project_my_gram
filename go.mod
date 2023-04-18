@@ -7,6 +7,7 @@ require github.com/rs/zerolog v1.29.1
 require (
 	github.com/corpix/uarand v0.0.0-20170723150923-031be390f409 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/golang-jwt/jwt/v5 v5.0.0-rc.2 // indirect
 	github.com/incubus8/go v0.0.0-20180624150828-6dfffa306ab7 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect

@@ -11,13 +11,19 @@ import (
 	"github.com/onainadapdap1/dev/kode/my_gram/server"
 )
 func drop(db *gorm.DB) {
-	if err := db.DropTableIfExists(&models.User{}).Error; err != nil {
+	if err := db.DropTableIfExists(
+		&models.User{}, 
+		&models.Photo{},
+		&models.Comment{}).Error; err != nil {
 		log.Fatalf("Error dropping tables: %v", err)
 	}
 }
 
 func migrate(db *gorm.DB) {
-	if err := db.Debug().AutoMigrate(&models.User{}).Error; err != nil {
+	if err := db.Debug().AutoMigrate(
+		&models.User{}, 
+		&models.Photo{},
+		&models.Comment{}).Error; err != nil {
 		log.Fatalf("Error migrating tables: %v", err)
 	}
 }

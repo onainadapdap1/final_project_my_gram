@@ -9,7 +9,7 @@ import (
 
 func HassPass(pass string) (string, error) {
 	if len(pass) == 0 {
-		return "", errors.New("Password should not be empty")
+		return "", errors.New("password should not be empty")
 	}
 
 	bytePassword := []byte(pass)
@@ -20,4 +20,13 @@ func HassPass(pass string) (string, error) {
 	}
 
 	return string(hashPassword), nil
+}
+
+func ComparePassword(hashPass, inputPasss []byte) bool {
+	err := bcrypt.CompareHashAndPassword(hashPass, inputPasss)
+	if err != nil {
+		return false
+	}
+
+	return true
 }
