@@ -1,0 +1,757 @@
+basePath: /
+definitions:
+  dtos.CommentFormateDetail:
+    properties:
+      id:
+        type: integer
+      message:
+        type: string
+      photo:
+        $ref: '#/definitions/dtos.CommentPhotoFormatter'
+      photo_id:
+        type: integer
+      user:
+        $ref: '#/definitions/dtos.CommentUserFormatter'
+      user_id:
+        type: integer
+    type: object
+  dtos.CommentFormatter:
+    properties:
+      id:
+        type: integer
+      message:
+        type: string
+      photo_id:
+        type: integer
+      user_id:
+        type: integer
+    type: object
+  dtos.CommentPhotoFormatter:
+    properties:
+      caption:
+        type: string
+      photo_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  dtos.CommentUserFormatter:
+    properties:
+      age:
+        type: integer
+      username:
+        type: string
+    type: object
+  dtos.CreateCommentInput:
+    properties:
+      message:
+        type: string
+      photo_id:
+        type: integer
+    required:
+    - message
+    - photo_id
+    type: object
+  dtos.CreateSocialMediaInput:
+    properties:
+      name:
+        type: string
+      social_media_url:
+        type: string
+    type: object
+  dtos.LoginUserInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dtos.PhotoDetailFormatter:
+    properties:
+      caption:
+        type: string
+      id:
+        type: integer
+      photo_url:
+        type: string
+      title:
+        type: string
+      user:
+        $ref: '#/definitions/dtos.PhotoUserFormatter'
+      user_id:
+        type: integer
+    type: object
+  dtos.PhotoFormatter:
+    properties:
+      caption:
+        type: string
+      id:
+        type: integer
+      photo_url:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dtos.PhotoUserFormatter:
+    properties:
+      age:
+        type: integer
+      username:
+        type: string
+    type: object
+  dtos.RegisterUserInput:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dtos.SocialMediaDetailFormatter:
+    properties:
+      id:
+        type: integer
+      social_media_name:
+        type: string
+      social_media_url:
+        type: string
+      user:
+        $ref: '#/definitions/dtos.SocialMediaUserFormatter'
+      user_id:
+        type: integer
+    type: object
+  dtos.SocialMediaFormatter:
+    properties:
+      id:
+        type: integer
+      social_media_name:
+        type: string
+      social_media_url:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  dtos.SocialMediaUserFormatter:
+    properties:
+      age:
+        type: integer
+      username:
+        type: string
+    type: object
+  dtos.UpdateCommentInput:
+    properties:
+      message:
+        type: string
+    required:
+    - message
+    type: object
+  dtos.UserRegisterFormatter:
+    properties:
+      age:
+        type: integer
+      email:
+        type: string
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  utils.Meta:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  utils.Response:
+    properties:
+      data: {}
+      meta:
+        $ref: '#/definitions/utils.Meta'
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is service for MyGram.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: MyGram API
+  version: "1.0"
+paths:
+  /api/v1/comments:
+    get:
+      description: Get all comments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.CommentFormateDetail'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get all comments
+      tags:
+      - comments
+  /api/v1/comments/comment:
+    post:
+      consumes:
+      - application/json
+      description: Create a new comment with given message and photo id
+      parameters:
+      - description: create new comment
+        in: body
+        name: dtos.CreateCommentInput
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateCommentInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CommentFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Create comment
+      tags:
+      - comments
+  /api/v1/comments/comment/{id}:
+    delete:
+      description: Delete comment by id
+      parameters:
+      - description: delete comment by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Delete comment by id
+      tags:
+      - comments
+    get:
+      description: Get one comment by id
+      parameters:
+      - description: get comment by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CommentFormateDetail'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get one comment by id
+      tags:
+      - comments
+    put:
+      consumes:
+      - application/json
+      description: Update a new comment with given message and photo id
+      parameters:
+      - description: Photo iD
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update comment
+        in: body
+        name: dtos.UpdateCommentInput
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.UpdateCommentInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CommentFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Update comment
+      tags:
+      - comments
+  /api/v1/comments/restorecomment/{id}:
+    put:
+      description: Restore comment by id
+      parameters:
+      - description: restore comment by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.CommentFormateDetail'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Restore comment by id
+      tags:
+      - comments
+  /api/v1/login:
+    post:
+      consumes:
+      - application/json
+      description: User login with email and password
+      parameters:
+      - description: Login user input
+        in: body
+        name: dtos.LoginUserInput
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.LoginUserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserRegisterFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Login user
+      tags:
+      - users
+  /api/v1/photos:
+    get:
+      description: Get all photos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.PhotoDetailFormatter'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get all photos
+      tags:
+      - photos
+  /api/v1/photos/photo:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create a new photo with a given title, caption and image file
+      parameters:
+      - description: Title of the photo
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Caption of the photo
+        in: formData
+        name: caption
+        required: true
+        type: string
+      - description: Image file of the photo
+        in: formData
+        name: photo_url
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PhotoFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Create photo
+      tags:
+      - photos
+  /api/v1/photos/photo/{id}:
+    delete:
+      description: Delete photo by id
+      parameters:
+      - description: delete photo by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Delete photo by id
+      tags:
+      - photos
+    get:
+      description: Get one photo by id
+      parameters:
+      - description: get photo by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PhotoDetailFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get one photo by id
+      tags:
+      - photos
+    put:
+      consumes:
+      - application/json
+      - multipart/form-data
+      description: Update photo
+      parameters:
+      - description: Photo iD
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Title of the photo to be updated
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Caption of the photo to be updated
+        in: formData
+        name: caption
+        required: true
+        type: string
+      - description: Image file of the photo to be updated
+        in: formData
+        name: photo_url
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.PhotoFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Update photo
+      tags:
+      - photos
+  /api/v1/register:
+    post:
+      consumes:
+      - application/json
+      description: Register new user
+      parameters:
+      - description: register user
+        in: body
+        name: dtos.RegisterUserInput
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.RegisterUserInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.UserRegisterFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Register a new user
+      tags:
+      - users
+  /api/v1/socialmedias:
+    get:
+      description: Get all social medias
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dtos.SocialMediaDetailFormatter'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get all social medias
+      tags:
+      - socialmedias
+  /api/v1/socialmedias/restoresosmed/{id}:
+    put:
+      description: Restore social media by id
+      parameters:
+      - description: restore social media by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.SocialMediaDetailFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Restore social media by id
+      tags:
+      - socialmedias
+  /api/v1/socialmedias/socialmedia:
+    post:
+      consumes:
+      - application/json
+      description: Create new social media
+      parameters:
+      - description: create user social media
+        in: body
+        name: dtos.CreateSocialMediaInput
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateSocialMediaInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.SocialMediaFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Create a new social media
+      tags:
+      - socialmedias
+  /api/v1/socialmedias/socialmedia/{id}:
+    get:
+      description: Get one social media by id
+      parameters:
+      - description: get social media by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.SocialMediaDetailFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+      summary: Get one social media by id
+      tags:
+      - socialmedias
+    put:
+      consumes:
+      - application/json
+      description: Update social media by id
+      parameters:
+      - description: social media iD
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update comment
+        in: body
+        name: dtos.CreateSocialMediaInput
+        required: true
+        schema:
+          $ref: '#/definitions/dtos.CreateSocialMediaInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dtos.SocialMediaFormatter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Update social media by id
+      tags:
+      - socialmedias
+  /api/v1/socialmedias/sosmed/{id}:
+    delete:
+      description: Delete social media by id
+      parameters:
+      - description: delete social media by id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/utils.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.Response'
+      security:
+      - BearerAuth: []
+      summary: Delete social media by id
+      tags:
+      - socialmedias
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -29,6 +29,17 @@ func NewCommentHandler(service service.CommentServiceInterface) CommentHandlerIn
 	return &commentHandler{service: service}
 }
 
+// Create Comment  godoc
+// @Summary Create comment
+// @Description Create a new comment with given message and photo id
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param inputData dtos.CreateCommentInput body dtos.CreateCommentInput{} true "create new comment"
+// @Success 200 {object} dtos.CommentFormatter
+// @Failure 400 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/comments/comment [post]
 func (h *commentHandler) CreateComment(c *gin.Context) {
 	currentUser := c.MustGet("currentUser").(models.User)
 
@@ -66,6 +77,19 @@ func (h *commentHandler) CreateComment(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Update Comment  godoc
+// @Summary Update comment
+// @Description Update a new comment with given message and photo id
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param id path int true "Photo iD"
+// @Param inputData dtos.UpdateCommentInput body dtos.UpdateCommentInput{} true "update comment"
+// @Success 200 {object} dtos.CommentFormatter
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/comments/comment/{id} [put]
 func (h *commentHandler) UpdateComment(c *gin.Context) {
 	var inputID dtos.GetCommentDetailInput
 	if err := c.ShouldBindUri(&inputID); err != nil {
@@ -112,6 +136,15 @@ func (h *commentHandler) UpdateComment(c *gin.Context) {
 
 }
 
+// Get Comment by ID godoc
+// @Summary Get one comment by id
+// @Description Get one comment by id
+// @Tags comments
+// @Produce json
+// @Param id path int true "get comment by id"
+// @Success 200 {object} dtos.CommentFormateDetail{}
+// @Failure 400 {object} utils.Response
+// @Router /api/v1/comments/comment/{id} [get]
 func (h *commentHandler) FindCommentByID(c *gin.Context) {
 	var inputID dtos.GetCommentDetailInput
 
@@ -132,6 +165,14 @@ func (h *commentHandler) FindCommentByID(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Get all comments godoc
+// @Summary Get all comments
+// @Description Get all comments
+// @Tags comments
+// @Produce json
+// @Success 200 {object} []dtos.CommentFormateDetail{}
+// @Failure 400 {object} utils.Response
+// @Router /api/v1/comments [get]
 func (h *commentHandler) FindAllComments(c *gin.Context) {
 	comments, err := h.service.FindAllComments()
 	if err != nil {
@@ -141,9 +182,20 @@ func (h *commentHandler) FindAllComments(c *gin.Context) {
 	}
 	response := utils.APIResponse("success to get all comments", http.StatusOK, "success", dtos.FormateCommentDetails(comments))
 	c.JSON(http.StatusOK, response)
-
 }
 
+// Delete comment by ID godoc
+// @Summary Delete comment by id
+// @Description Delete comment by id
+// @Tags comments
+// @Produce json
+// @Param id path int true "delete comment by id"
+// @Success 200 {object} utils.Response
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/comments/comment/{id} [delete]
 func (h *commentHandler) DeleteCommentByID(c *gin.Context) {
 	var inputID dtos.GetCommentDetailInput
 	if err := c.ShouldBindUri(&inputID); err != nil {
@@ -178,6 +230,17 @@ func (h *commentHandler) DeleteCommentByID(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Restore comment by ID godoc
+// @Summary Restore comment by id
+// @Description Restore comment by id
+// @Tags comments
+// @Param id path int true "restore comment by id"
+// @Success 200 {object} dtos.CommentFormateDetail
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/comments/restorecomment/{id} [put]
 func (h *commentHandler) RestoreCommentByID(c *gin.Context) {
 	var inputID dtos.GetCommentDetailInput
 	if err := c.ShouldBindUri(&inputID); err != nil {

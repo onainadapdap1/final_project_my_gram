@@ -10,13 +10,34 @@ import (
 	"github.com/onainadapdap1/dev/kode/my_gram/middlewares"
 	"github.com/onainadapdap1/dev/kode/my_gram/repository"
 	"github.com/onainadapdap1/dev/kode/my_gram/service"
+
+	_ "github.com/onainadapdap1/dev/kode/my_gram/docs"
+
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title 			MyGram API
+// @version         1.0
+// @description     This is service for MyGram.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name    API Support
+// @contact.url     http://www.swagger.io/support
+// @contact.email   support@swagger.io
+
+// @license.name  	Apache 2.0
+// @license.url   	http://www.apache.org/licenses/LICENSE-2.0.html
+// @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 
 func Router() *gin.Engine {
 	router := gin.Default()
 
 	db := driver.ConnectDB()
-
+	
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := handler.NewUserHandler(userService)
@@ -67,6 +88,7 @@ func Router() *gin.Engine {
 		socialmediaRouter.PUT("/restoresosmed/:id", userAuthorization(userService), socialMediaHandler.RestoreSocialMedia)
 	}
 
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	return router
 }
 

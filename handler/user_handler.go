@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/onainadapdap1/dev/kode/my_gram/dtos"
 	"github.com/onainadapdap1/dev/kode/my_gram/helpers"
-	"github.com/onainadapdap1/dev/kode/my_gram/models"
 	"github.com/onainadapdap1/dev/kode/my_gram/service"
 	"github.com/onainadapdap1/dev/kode/my_gram/utils"
 )
@@ -25,8 +24,19 @@ func NewUserHandler(service service.UserServiceInterface) UserHandlerInterface {
 	return &userHandler{service: service}
 }
 
+// Register User godoc
+// @Summary Register a new user
+// @Description Register new user
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input dtos.RegisterUserInput body dtos.RegisterUserInput{} true "register user"
+// @Success 200 {object} dtos.UserRegisterFormatter
+// @Failure 400 {object} utils.Response
+// @Failure 422 {object} utils.Response
+// @Router /api/v1/register [post]
 func (h *userHandler) RegisterUser(c *gin.Context) {
-	var input models.RegisterUserInput
+	var input dtos.RegisterUserInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		errors := utils.FormatValidationError(err)
 		errorMessage := gin.H{"errors": errors}
@@ -48,8 +58,19 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Login User godoc
+// @Summary Login user
+// @Description User login with email and password
+// @Tags users
+// @Accept json
+// @Produce json
+// @Param input dtos.LoginUserInput body dtos.LoginUserInput{} true "Login user input"
+// @Success 200 {object} dtos.UserRegisterFormatter
+// @Failure 400 {object} utils.Response
+// @Failure 422 {object} utils.Response
+// @Router /api/v1/login [post]
 func (h *userHandler) LoginUser(c *gin.Context) {
-	var input models.LoginUserInput
+	var input dtos.LoginUserInput
 
 	err := c.ShouldBindJSON(&input)
 	if err != nil {
@@ -78,7 +99,7 @@ func (h *userHandler) LoginUser(c *gin.Context) {
 	}
 
 	loginFormateUser := dtos.FormateUserLogin(loggeinUser, token)
-	
+
 	response := utils.APIResponse("Successfully loggedin", http.StatusOK, "success", loginFormateUser)
 	c.JSON(http.StatusOK, response)
 }

@@ -3,14 +3,15 @@ package service
 import (
 	"errors"
 
+	"github.com/onainadapdap1/dev/kode/my_gram/dtos"
 	"github.com/onainadapdap1/dev/kode/my_gram/helpers"
 	"github.com/onainadapdap1/dev/kode/my_gram/models"
 	"github.com/onainadapdap1/dev/kode/my_gram/repository"
 )
 
 type UserServiceInterface interface {
-	Registeruser(input models.RegisterUserInput) (models.User, error)
-	LoginUser(input models.LoginUserInput) (models.User, error)
+	Registeruser(input dtos.RegisterUserInput) (models.User, error)
+	LoginUser(input dtos.LoginUserInput) (models.User, error)
 	GetUserByID(ID uint) (models.User, error)
 }
 
@@ -22,7 +23,7 @@ func NewUserService(repo repository.UserRepositoryInterface) UserServiceInterfac
 	return &userService{repo: repo}
 }
 
-func (s *userService) Registeruser(input models.RegisterUserInput) (models.User, error) {
+func (s *userService) Registeruser(input dtos.RegisterUserInput) (models.User, error) {
 	user := models.User {
 		Username: input.Username,
 		Email: input.Email,
@@ -38,7 +39,7 @@ func (s *userService) Registeruser(input models.RegisterUserInput) (models.User,
 	return newUser, nil
 }
 
-func (s *userService) LoginUser(input models.LoginUserInput) (models.User, error) {
+func (s *userService) LoginUser(input dtos.LoginUserInput) (models.User, error) {
 	email := input.Email
 	inputPassword := input.Password
 

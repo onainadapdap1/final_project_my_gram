@@ -29,6 +29,17 @@ func NewSocialmediaHandler(service service.SocialmediaServiceInterface) Socialme
 	return &socialmediaHandler{service: service}
 }
 
+// Create Social Media godoc
+// @Summary Create a new social media
+// @Description Create new social media
+// @Tags socialmedias
+// @Accept json
+// @Produce json
+// @Param input dtos.CreateSocialMediaInput body dtos.CreateSocialMediaInput{} true "create user social media"
+// @Success 200 {object} dtos.SocialMediaFormatter
+// @Failure 400 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/socialmedias/socialmedia [post]
 func (h *socialmediaHandler) CreateSocialMedia(c *gin.Context) {
 	var input dtos.CreateSocialMediaInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -53,6 +64,19 @@ func (h *socialmediaHandler) CreateSocialMedia(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Update Social Media godoc
+// @Summary Update social media by id
+// @Description Update social media by id
+// @Tags socialmedias
+// @Accept json
+// @Produce json
+// @Param id path int true "social media iD"
+// @Param inputData dtos.CreateSocialMediaInput body dtos.CreateSocialMediaInput{} true "update comment"
+// @Success 200 {object} dtos.SocialMediaFormatter
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/socialmedias/socialmedia/{id} [put]
 func (h *socialmediaHandler) UpdateSocialMedia(c *gin.Context) {
 	var inputID dtos.GetSocialMediaDetailInput
 	if err := c.ShouldBindUri(&inputID); err != nil {
@@ -92,11 +116,19 @@ func (h *socialmediaHandler) UpdateSocialMedia(c *gin.Context) {
 		return
 	}
 
-	response := utils.APIResponse("sucess to update social media", http.StatusOK, "success", dtos.FormateSocialMedia(updatedSocialMedia))
+	response := utils.APIResponse("sucess to update social media", http.StatusOK, "success", dtos.FormateSocialMediaDetail(updatedSocialMedia))
 	c.JSON(http.StatusOK, response)
 
 }
 
+// Get all social medias godoc
+// @Summary Get all social medias
+// @Description Get all social medias
+// @Tags socialmedias
+// @Produce json
+// @Success 200 {object} []dtos.SocialMediaDetailFormatter{}
+// @Failure 400 {object} utils.Response
+// @Router /api/v1/socialmedias [get]
 func (h *socialmediaHandler) FindAllSocialMedia(c *gin.Context) {
 	socialMedias, err := h.service.FindAllSocialMedia()
 	if err != nil {
@@ -108,7 +140,15 @@ func (h *socialmediaHandler) FindAllSocialMedia(c *gin.Context) {
 	response := utils.APIResponse("list of social medias", http.StatusOK, "success", dtos.FormateSocialMediaDetails(socialMedias))
 	c.JSON(http.StatusOK, response)
 }
-
+// Get Social Media by ID godoc
+// @Summary Get one social media by id
+// @Description Get one social media by id
+// @Tags socialmedias
+// @Produce json
+// @Param id path int true "get social media by id"
+// @Success 200 {object} dtos.SocialMediaDetailFormatter{}
+// @Failure 400 {object} utils.Response
+// @Router /api/v1/socialmedias/socialmedia/{id} [get]
 func (h *socialmediaHandler) FindBySocialMediaID(c *gin.Context) {
 	var inputID dtos.GetSocialMediaDetailInput
 	if err := c.ShouldBindUri(&inputID); err != nil {
@@ -128,6 +168,18 @@ func (h *socialmediaHandler) FindBySocialMediaID(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Delete social media by ID godoc
+// @Summary Delete social media by id
+// @Description Delete social media by id
+// @Tags socialmedias
+// @Produce json
+// @Param id path int true "delete social media by id"
+// @Success 200 {object} utils.Response
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/socialmedias/sosmed/{id} [delete]
 func (h *socialmediaHandler) DeleteSocialMedia(c *gin.Context) {
 	var inputID dtos.GetSocialMediaDetailInput
 	if err := c.ShouldBindUri(&inputID); err != nil {
@@ -138,8 +190,8 @@ func (h *socialmediaHandler) DeleteSocialMedia(c *gin.Context) {
 
 	socialMedia, err := h.service.FindSocialMediaByID(&inputID)
 	if err != nil {
-		response := utils.APIResponse(fmt.Sprintf("Failed find by id : %v", err), http.StatusBadRequest, "error", nil)
-		c.JSON(http.StatusBadRequest, response)
+		response := utils.APIResponse(fmt.Sprintf("Failed find by id : %v", err), http.StatusUnprocessableEntity, "error", nil)
+		c.JSON(http.StatusUnprocessableEntity, response)
 		return
 	}
 
@@ -163,6 +215,17 @@ func (h *socialmediaHandler) DeleteSocialMedia(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Restore social media by ID godoc
+// @Summary Restore social media by id
+// @Description Restore social media by id
+// @Tags socialmedias
+// @Param id path int true "restore social media by id"
+// @Success 200 {object} dtos.SocialMediaDetailFormatter
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/socialmedias/restoresosmed/{id} [put]
 func (h *socialmediaHandler) RestoreSocialMedia(c *gin.Context) {
 	var inputID dtos.GetSocialMediaDetailInput
 	if err := c.ShouldBindUri(&inputID); err != nil {

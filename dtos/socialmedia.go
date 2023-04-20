@@ -9,7 +9,7 @@ type GetSocialMediaDetailInput struct {
 type CreateSocialMediaInput struct {
 	Name    string `gorm:"not null" json:"name" form:"name"`
 	SocialMediaUrl  string `gorm:"null" json:"social_media_url" form:"social_media_url"`
-	User models.User
+	User models.User `gorm:"-" swaggerignore:"true"`
 }
 
 type SocialMediaFormatter struct {

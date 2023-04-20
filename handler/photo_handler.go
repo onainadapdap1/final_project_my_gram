@@ -32,7 +32,20 @@ func NewPhotoHandler(service service.PhotoServiceInterface) PhotoHandlerInterfac
 	return &photoHandler{service: service}
 }
 
-func (h *photoHandler) CreatePhoto(c *gin.Context) {
+// Create Photo godoc
+// @Summary Create photo
+// @Description Create a new photo with a given title, caption and image file
+// @Tags photos
+// @Accept mpfd
+// @Produce json
+// @Param title formData string true "Title of the photo"
+// @Param caption formData string true "Caption of the photo"
+// @Param photo_url formData file true "Image file of the photo"
+// @Success 200 {object} dtos.PhotoFormatter
+// @Failure 400 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/photos/photo [post]
+func (h *photoHandler) CreatePhoto(c *gin.Context) { 
 	title := c.PostForm("title")
 	caption := c.PostForm("caption")
 	file, err := c.FormFile("photo_url")
@@ -99,10 +112,26 @@ func (h *photoHandler) CreatePhoto(c *gin.Context) {
 		return
 	}
 
-	response := utils.APIResponse("Success to create photo", http.StatusOK, "success", dtos.FormatePhoto(newPhoto))
+	response := utils.APIResponse("Success to create photo", http.StatusOK, "success", dtos.FormatePhoto(newPhoto)) 
 	c.JSON(http.StatusOK, response)
 }
 
+// Update photo godoc
+// @Summary Update photo
+// @Description Update photo
+// @Tags photos
+// @Accept json,mpfd
+// @Produce json
+// @Param id path int true "Photo iD"
+// @Param title formData string true "Title of the photo to be updated"
+// @Param caption formData string true "Caption of the photo to be updated"
+// @Param photo_url formData file true "Image file of the photo to be updated"
+// @Success 200 {object} dtos.PhotoFormatter
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/photos/photo/{id} [put]
 func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 	var inputID dtos.GetPhotoDetailInput
 	err := c.ShouldBindUri(&inputID)
@@ -206,6 +235,14 @@ func (h *photoHandler) UpdatePhoto(c *gin.Context) {
 
 }
 
+// Get All photo godoc
+// @Summary Get all photos
+// @Description Get all photos
+// @Tags photos
+// @Produce json
+// @Success 200 {object} []dtos.PhotoDetailFormatter{}
+// @Failure 400 {object} utils.Response
+// @Router /api/v1/photos [get]
 func (h *photoHandler) FindAllPhoto(c *gin.Context) {
 	photos, err := h.service.FindAllPhoto()
 	if err != nil {
@@ -219,6 +256,15 @@ func (h *photoHandler) FindAllPhoto(c *gin.Context) {
 
 }
 
+// Get Photo by ID godoc
+// @Summary Get one photo by id
+// @Description Get one photo by id
+// @Tags photos
+// @Produce json
+// @Param id path int true "get photo by id"
+// @Success 200 {object} dtos.PhotoDetailFormatter{}
+// @Failure 400 {object} utils.Response
+// @Router /api/v1/photos/photo/{id} [get]
 func (h *photoHandler) FindByPhotoID(c *gin.Context) {
 	param := c.Param("id")
 	photoID, err := strconv.Atoi(param)
@@ -239,6 +285,18 @@ func (h *photoHandler) FindByPhotoID(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
+// Delete photo by ID godoc
+// @Summary Delete photo by id
+// @Description Delete photo by id
+// @Tags photos
+// @Produce json
+// @Param id path int true "delete photo by id"
+// @Success 200 {object} utils.Response
+// @Failure 400 {object} utils.Response
+// @Failure 403 {object} utils.Response
+// @Failure 500 {object} utils.Response
+// @Security BearerAuth
+// @Router /api/v1/photos/photo/{id} [delete]
 func (h *photoHandler) DeletePhotoByID(c *gin.Context) {
 	param := c.Param("id")
 	photoID, err := strconv.Atoi(param)
@@ -252,6 +310,15 @@ func (h *photoHandler) DeletePhotoByID(c *gin.Context) {
 	if err != nil {
 		response := utils.APIResponse("failed to get detail photo", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
+		return
+	}
+
+	currentUser := c.MustGet("currentUser").(models.User)
+	userId := currentUser.ID
+	
+	if userId != photo.UserID {
+		response := utils.APIResponse("Unauthorized", http.StatusForbidden, "error", nil)
+		c.JSON(http.StatusForbidden, response)
 		return
 	}
 

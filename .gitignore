@@ -1,1 +1,10 @@
 .env
+
+# Ignore all generated files
+*.log
+*.swp
+*.out
+*.exe
+
+# Exclude Swagger file
+!docs/swagger.json

@@ -2,6 +2,18 @@ package dtos
 
 import "github.com/onainadapdap1/dev/kode/my_gram/models"
 
+type RegisterUserInput struct {
+	Username string `gorm:"not null;uniqueIndex" json:"username" form:"username" `
+	Email    string `gorm:"not null;uniqueIndex" json:"email" form:"email" `
+	Password string `gorm:"not null" json:"password" form:"password" `
+	Age      int    `gorm:"not null" json:"age" form:"age" `
+}
+
+type LoginUserInput struct {
+	Email    string `gorm:"not null;uniqueIndex" json:"email" form:"email" `
+	Password string `gorm:"not null" json:"password" form:"password" `
+}
+
 type UserRegisterFormatter struct {
 	ID       uint   `json:"id"`
 	Username string `json:"username"`
@@ -30,12 +42,12 @@ type LoginUserFormatter struct {
 }
 
 func FormateUserLogin(user models.User, token string) LoginUserFormatter {
-	formatter := LoginUserFormatter {
-		ID: user.ID,
+	formatter := LoginUserFormatter{
+		ID:       user.ID,
 		Username: user.Username,
-		Email: user.Email,
-		Age: user.Age,
-		Token: token,
+		Email:    user.Email,
+		Age:      user.Age,
+		Token:    token,
 	}
 
 	return formatter

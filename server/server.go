@@ -14,6 +14,7 @@ func init() {
 	gotenv.Load()
 }
 
+
 func StartServer() {
 	addr := driver.Config.ServiceHost + ":" + driver.Config.ServicePort
 	fmt.Println(driver.Config.ServicePort,"<<<<<")

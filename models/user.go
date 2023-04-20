@@ -20,18 +20,6 @@ type User struct {
 	SocialMedia []SocialMedia
 }
 
-type RegisterUserInput struct {
-	Username string `gorm:"not null;uniqueIndex" json:"username" form:"username" `
-	Email    string `gorm:"not null;uniqueIndex" json:"email" form:"email" `
-	Password string `gorm:"not null" json:"password" form:"password" `
-	Age      int    `gorm:"not null" json:"age" form:"age" `
-}
-
-type LoginUserInput struct {
-	Email    string `gorm:"not null;uniqueIndex" json:"email" form:"email" `
-	Password string `gorm:"not null" json:"password" form:"password" `
-}
-
 // naming convention
 func (u *User) TableName() string {
 	return "tb_users"
